@@ -1,80 +1,147 @@
-
-var canvas = document.getElementById('pong-table')
-var ctx = canvas.getContext('2d');
-canvas.width = screen.width/1.5;
-canvas.height = screen.height/2;
+window.onload = function () {
+  document.getElementById("start-button").onclick = function () {
 
 
 
-var ball = {
-  x: 200,
-  y: 30,
-  vx: 6,
-  vy: 3,
-  radius: 6,
-  color: 'red',
-  drawBall: function () {
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
-    ctx.closePath();
-    ctx.fillStyle = this.color;
-    ctx.fill();
+  var canvas = document.getElementById('pong-table')
+  var ctx = canvas.getContext('2d');
+  canvas.width = screen.width/3;
+  canvas.height = screen.height/3.5;
+
+
+    class Paddle {
+      constructor(x, y, width, height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+      }
+      moveUp() {
+        this.y -= 30;
+      }
+      moveDown() {
+        this.y += 30;
+      }
+      draw() {
+        ctx.fillStyle = "red";
+        ctx.fillRect(this.x, this.y, this.width, this.height)
+      }
+    }
+
+    let rightPaddle = new Paddle(canvas.width - 20, 40, 20, 75)
+    let leftPaddle = new Paddle(0, canvas.height / 2.5, 20, 75)
+
+
+
+    
+  class Ball extends Paddle{
+    constructor(x, y, vx, vy, width, height, color) {
+      super()
+      this.x = x;
+      this.y = y;
+      this.vx = vx;
+      this.vy = vy;
+      this.width = width;
+      this.height = height;
+      this.color = color;
+    }
+    drawBall() {
+      ctx.fillStyle = this.color;
+      ctx.fillRect(this.x, this.y, this.width, this.height)
+    }
+    moveBall() {
+      this.x += this.vx;
+      this.y += this.vy;
+      this.drawBall();
+
+      if (this.y + this.height > canvas.height || this.y < 0) {
+        this.vy = -this.vy;
+      }
+      if (this.x + this.width > canvas.width || this.x < 0) {
+        this.vx = -this.vx;
+      }
+
+      if ((this.x + this.width >= rightPaddle.x && this.x <= rightPaddle.x + rightPaddle.width)
+        && (this.y < rightPaddle.y + rightPaddle.height && this.y + this.height > rightPaddle.y)) {
+        this.vy = -this.vy
+      }
+
+      if ((this.y + this.height >= rightPaddle.y && this.y <= rightPaddle.y + rightPaddle.height)
+        && (this.x < rightPaddle.x + rightPaddle.width && this.x + this.width > rightPaddle.x)) {
+        this.vx = -this.vx
+      }
+    }
   }
-};
 
-class Paddle {
-  constructor(x, y, width, height) {
-    this.x = x;
-    this.y = y;
-    this.width = width; 
-    this.height = height;
+  let ball = new Ball(300, 30, 4, 4, 15, 15, 'green');
+
+ 
+
+  document.onkeydown = function (e) {
+    switch (e.keyCode) {
+      case 38:
+        if (rightPaddle.y >= 0) {
+          rightPaddle.moveUp(); break;
+        } else {
+          break;
+        }
+      case 40:
+        if (rightPaddle.y + rightPaddle.height <= canvas.height) {
+          rightPaddle.moveDown(); break;
+        } else {
+          break;
+        }
+      case 87:
+        if (leftPaddle.y >= 0) {
+          leftPaddle.moveUp(); console.log('up', leftPaddle); break;
+        } else {
+          break;
+        }
+      case 83:
+        if (leftPaddle.y + leftPaddle.height <= canvas.height) {
+          leftPaddle.moveDown(); console.log('down', leftPaddle); break;
+        } else {
+          break;
+        }
+    }
   }
-  moveUp(){
-    this.y--;
+
+  // function moveBall() {
+  //   ball.x += ball.vx;
+  //   ball.y += ball.vy;
+  //   ball.drawBall();
+
+  //   if (ball.y + ball.height > canvas.height || ball.y < 0) {
+  //     ball.vy = -ball.vy;
+  //   }
+  //   if (ball.x + ball.width > canvas.width || ball.x < 0) {
+  //     ball.vx = -ball.vx;
+  //   }
+
+  //   if ((ball.x + ball.width >= rightPaddle.x && ball.x <= rightPaddle.x + rightPaddle.width)
+  //     && (ball.y < rightPaddle.y + rightPaddle.height && ball.y + ball.height > rightPaddle.y)) {
+  //     ball.vy = -ball.vy 
+  //   }
+
+  //   //right side
+  //   if ((ball.y + ball.height >= rightPaddle.y && ball.y <= rightPaddle.y + rightPaddle.height)
+  //     && (ball.x < rightPaddle.x + rightPaddle.width && ball.x + ball.width > rightPaddle.x)) {
+  //     ball.vx = -ball.vx 
+  //   }
+  // }
+
+  function animate(){
+    window.requestAnimationFrame(animate);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ball.moveBall()
+    rightPaddle.draw();
+    leftPaddle.draw();
+    rightPaddle.moveUp();
+    rightPaddle.moveDown();
+    leftPaddle.moveUp();
+    leftPaddle.moveDown();
   }
-  moveDown(){
-    this.y++;
-  }
-  draw(){
-    ctx.fillStyle = "red";
-    ctx.fillRect(this.x, this.y, this.width, this.height)
+  animate()
   }
 }
-
-let rightPaddle = new Paddle(canvas.width - 20, canvas.height/2, 20, 100)
-let leftPaddle = new Paddle(0, canvas.height/2, 20, 100)
-
-function moveBall() {
-  ball.x += ball.vx;
-  ball.y += ball.vy;
-  ball.drawBall();
-  if (
-    ball.y + ball.vy > canvas.height - ball.radius ||
-    ball.y + ball.vy < ball.radius
-  ) {
-    ball.vy = -ball.vy;
-  }
-  if (
-    ball.x + ball.vx > canvas.width - ball.radius ||
-    ball.x + ball.vx < ball.radius
-  ) {
-    ball.vx = -ball.vx;
-  }
-}
-
-setTimeout(function(){
-
-  ball.vx = -ball.vx;
-},2000)
-
-
-function animate(){
-  window.requestAnimationFrame(animate);
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  moveBall()
-  rightPaddle.draw();
-  leftPaddle.draw();
-}
-animate()
-

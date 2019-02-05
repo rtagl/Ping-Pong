@@ -22,7 +22,7 @@
 // }
 
 window.onload = function () {
-  //document.getElementById("start-button").onclick = function () {
+  document.getElementById("start-button").onclick = function () {
 
     let canvas = document.getElementById('pong-table')
     let ctx = canvas.getContext('2d')
@@ -147,4 +147,4 @@ window.onload = function () {
     }
     animate();
   }
-//}
+}
