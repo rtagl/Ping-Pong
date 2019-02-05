@@ -9,12 +9,36 @@ window.onload = function () {
   canvas.height = screen.height/3.5;
 
 
+    class Animal{
+      constructor(name){
+        this.name = name
+      }
+      speak (){
+        console.log(this)
+      }
+
+    }
+
+    class Rabbit extends Animal {
+      constructor(name){
+        super(name)
+      }
+      hi(){
+        console.log(this)
+        super.speak()
+      }
+    }
+    console.log('hi')
+    let r = new Animal('white rabbit');
+    let rabbit = new Rabbit('something else')
+    rabbit.hi()
+
     class Paddle {
-      constructor(x, y, width, height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
+      constructor(px, py, pWidth, pHeight) {
+        this.x = px;
+        this.y = py;
+        this.width = pWidth;
+        this.height = pHeight;
       }
       moveUp() {
         this.y -= 30;
@@ -32,11 +56,9 @@ window.onload = function () {
     let leftPaddle = new Paddle(0, canvas.height / 2.5, 20, 75)
 
 
-
-    
-  class Ball extends Paddle{
-    constructor(x, y, vx, vy, width, height, color) {
-      super()
+  class Ball extends Paddle {
+    constructor(x, y, vx, vy, width, height, color, px, py, pWidth, pHeight) {
+      super(px, py, pWidth, pHeight);
       this.x = x;
       this.y = y;
       this.vx = vx;
@@ -44,10 +66,12 @@ window.onload = function () {
       this.width = width;
       this.height = height;
       this.color = color;
+      this.px = px;
+      console.log(this);
     }
     drawBall() {
       ctx.fillStyle = this.color;
-      ctx.fillRect(this.x, this.y, this.width, this.height)
+      ctx.fillRect(this.x, this.y, this.width, this.height);
     }
     moveBall() {
       this.x += this.vx;
@@ -61,14 +85,22 @@ window.onload = function () {
         this.vx = -this.vx;
       }
 
-      if ((this.x + this.width >= rightPaddle.x && this.x <= rightPaddle.x + rightPaddle.width)
-        && (this.y < rightPaddle.y + rightPaddle.height && this.y + this.height > rightPaddle.y)) {
-        this.vy = -this.vy
+      if (
+        this.x + this.width >= rightPaddle.x &&
+        this.x <= rightPaddle.x + rightPaddle.width &&
+        (this.y < rightPaddle.y + rightPaddle.height &&
+          this.y + this.height > rightPaddle.y)
+      ) {
+        this.vy = -this.vy;
       }
 
-      if ((this.y + this.height >= rightPaddle.y && this.y <= rightPaddle.y + rightPaddle.height)
-        && (this.x < rightPaddle.x + rightPaddle.width && this.x + this.width > rightPaddle.x)) {
-        this.vx = -this.vx
+      if (
+        this.y + this.height >= rightPaddle.y &&
+        this.y <= rightPaddle.y + rightPaddle.height &&
+        (this.x < rightPaddle.x + rightPaddle.width &&
+          this.x + this.width > rightPaddle.x)
+      ) {
+        this.vx = -this.vx;
       }
     }
   }
