@@ -5,84 +5,61 @@ window.onload = function () {
 
   var canvas = document.getElementById('pong-table')
   var ctx = canvas.getContext('2d');
-  canvas.width = screen.width/3;
-  canvas.height = screen.height/3.5;
+  canvas.width = screen.width/2;
+  canvas.height = screen.height/2.5;
 
 
-    class Animal{
-      constructor(name){
-        this.name = name
-      }
-      speak (){
-        console.log(this)
-      }
 
-    }
-
-    class Rabbit extends Animal {
-      constructor(name){
-        super(name)
-      }
-      hi(){
-        console.log(this)
-        super.speak()
-      }
-    }
-    console.log('hi')
-    let r = new Animal('white rabbit');
-    let rabbit = new Rabbit('something else')
-    rabbit.hi()
-
-    class Paddle {
-      constructor(px, py, pWidth, pHeight) {
-        this.x = px;
-        this.y = py;
-        this.width = pWidth;
-        this.height = pHeight;
-      }
-      moveUp() {
-        this.y -= 30;
-      }
-      moveDown() {
-        this.y += 30;
-      }
-      draw() {
-        ctx.fillStyle = "red";
-        ctx.fillRect(this.x, this.y, this.width, this.height)
-      }
-    }
-
-    let rightPaddle = new Paddle(canvas.width - 20, 40, 20, 75)
-    let leftPaddle = new Paddle(0, canvas.height / 2.5, 20, 75)
-
-
-  class Ball extends Paddle {
-    constructor(x, y, vx, vy, width, height, color, px, py, pWidth, pHeight) {
-      super(px, py, pWidth, pHeight);
+  class Paddle {
+    constructor(x, y, width, height) {
       this.x = x;
       this.y = y;
-      this.vx = vx;
-      this.vy = vy;
+      this.width = width;
+      this.height = height;
+    }
+    moveUp() {
+      this.y -= 25;
+    }
+    moveDown() {
+      this.y += 25;
+    }
+    draw() {
+      ctx.fillStyle = "red";
+      ctx.fillRect(this.x, this.y, this.width, this.height)
+    }
+  }
+
+  let rightPaddle = new Paddle(canvas.width - 20, 40, 20, 75)
+  let leftPaddle = new Paddle(0, canvas.height / 2.5, 20, 75)
+
+  let rallyScore = 0;
+
+  class Ball {
+    constructor(x, y, vx, vy, width, height, color) {
+      this.x = x;
+      this.y = y;
+      this.vx = vx * (Math.random() > .5 ? 1 : -1);
+      this.vy = vy * (Math.random() * 2 - 1);
       this.width = width;
       this.height = height;
       this.color = color;
-      this.px = px;
-      console.log(this);
     }
     drawBall() {
       ctx.fillStyle = this.color;
       ctx.fillRect(this.x, this.y, this.width, this.height);
     }
     moveBall() {
-      this.x += this.vx;
-      this.y += this.vy;
+      let randomAngle = Math.random() * (1.5 - 0.5) + 0.5;
+      this.x += this.vx*randomAngle;
+      this.y += this.vy*randomAngle;
       this.drawBall();
 
       if (this.y + this.height > canvas.height || this.y < 0) {
-        this.vy = -this.vy;
+        this.vy = -this.vy
       }
       if (this.x + this.width > canvas.width || this.x < 0) {
-        this.vx = -this.vx;
+
+
       }
 
       if (
@@ -91,7 +68,11 @@ window.onload = function () {
         (this.y < rightPaddle.y + rightPaddle.height &&
           this.y + this.height > rightPaddle.y)
       ) {
-        this.vy = -this.vy;
+        rallyScore += 1
+        this.vx = -this.vx 
+        if (rallyScore >= 10) {
+          console.log(rallyScore);
+        }
       }
 
       if (
@@ -100,12 +81,34 @@ window.onload = function () {
         (this.x < rightPaddle.x + rightPaddle.width &&
           this.x + this.width > rightPaddle.x)
       ) {
+        this.vy = -this.vy;
+      }
+      if (
+        this.x + this.width >= leftPaddle.x &&
+        this.x <= leftPaddle.x + leftPaddle.width &&
+        (this.y < leftPaddle.y + leftPaddle.height &&
+          this.y + this.height > leftPaddle.y)
+      ) {
+        rallyScore += 1
         this.vx = -this.vx;
+        if (rallyScore >= 10) {
+          console.log(rallyScore);
+        }
+      }
+
+      if (
+        this.y + this.height >= leftPaddle.y &&
+        this.y <= leftPaddle.y + leftPaddle.height &&
+        (this.x < leftPaddle.x + leftPaddle.width &&
+          this.x + this.width > leftPaddle.x)
+      ) {
+        this.vy = -this.vy;
       }
     }
   }
 
-  let ball = new Ball(300, 30, 4, 4, 15, 15, 'green');
+
+  let ball = new Ball(300, 30, 6, 4, 15, 15, 'black');
 
  
 
@@ -125,18 +128,36 @@ window.onload = function () {
         }
       case 87:
         if (leftPaddle.y >= 0) {
-          leftPaddle.moveUp(); console.log('up', leftPaddle); break;
+          leftPaddle.moveUp(); break;
         } else {
           break;
         }
       case 83:
         if (leftPaddle.y + leftPaddle.height <= canvas.height) {
-          leftPaddle.moveDown(); console.log('down', leftPaddle); break;
+          leftPaddle.moveDown(); break;
         } else {
           break;
         }
     }
   }
+
+  function animate(){
+    window.requestAnimationFrame(animate);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ball.moveBall()
+    rightPaddle.draw();
+    leftPaddle.draw();
+    rightPaddle.moveUp();
+    rightPaddle.moveDown();
+    leftPaddle.moveUp();
+    leftPaddle.moveDown();
+
+  }
+  animate()
+  }
+}
+
 
   // function moveBall() {
   //   ball.x += ball.vx;
@@ -161,19 +182,3 @@ window.onload = function () {
   //     ball.vx = -ball.vx 
   //   }
   // }
-
-  function animate(){
-    window.requestAnimationFrame(animate);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    ball.moveBall()
-    rightPaddle.draw();
-    leftPaddle.draw();
-    rightPaddle.moveUp();
-    rightPaddle.moveDown();
-    leftPaddle.moveUp();
-    leftPaddle.moveDown();
-  }
-  animate()
-  }
-}
