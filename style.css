@@ -1,19 +1,25 @@
 body {
   font-family: VT323, Arial, sans-serif;
-  background-image: url('img/ping-pong-championship.jpg');
+  /* background-image: url('img/ping-pong-championship.jpg'); */
   /* overflow: hidden;  */
-  margin-bottom: 75px; */
+  /* background: rgb(72, 0, 255); */
+  background: rgb(2, 28, 67);
+  margin-bottom: 75px; 
 
 }
 
 .navbar {
   background-color: rgb(58, 0, 219);
+  padding-top: 0;
+  padding-bottom: 0;
 
 }
 
 .navbar-light .navbar-brand {
   color: rgb(192, 247, 170)!important;
   font-size: 1.75rem;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .container {
@@ -33,7 +39,6 @@ body {
 .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open>.dropdown-toggle.btn-primary {
     color: #fff;
     background-color: rgb(58, 0, 219);
- /*set the color you want here*/
 }
 
 #pong-table {
@@ -46,8 +51,24 @@ body {
 
 
 .scores {
-  color: white;
   font-size: 5px;
   padding-top: 20px;
   height: 50px;
+}
+
+.rally-score {
+  color: black;
+  min-width: 150px;
+  /* padding-left: 20px;
+  padding-right: 20px; */
+}
+
+.player-one-score {
+  color: rgb(5, 235, 250);
+  padding-right: 80px;
+}
+
+.player-two-score {
+  color: rgb(250, 5, 111);
+  padding-left: 80px;
 }
