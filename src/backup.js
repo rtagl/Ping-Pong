@@ -2,16 +2,19 @@
   let canvas = document.getElementById('pong-table')
   let ctx = canvas.getContext('2d')
   let gameOn = false; 
-  canvas.width = 700;
-  canvas.height = 500;
+  canvas.width = screen.width/2;
+  canvas.height = screen.height/2;
+  let ANIME; 
+  let ball = {}
+  let rallyCount = 0
 
   function drawTable() {
     ctx.fillStyle = 'rgb(187, 135, 37)';
-    ctx.fillRect(0, 0, 700, 500);
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.beginPath();
-    ctx.moveTo(350, 0);
-    ctx.lineTo(350, 500);
+    ctx.moveTo(canvas.width/2, 0);
+    ctx.lineTo(canvas.width/2, canvas.height);
     ctx.strokeStyle = 'white';
     ctx.stroke();
 
@@ -34,11 +37,17 @@
   drawLeftPaddle(leftPaddle);
 
   let rightPaddle = {
-    x: 690,
+    x: canvas.width - 10,
     y: 220,
     width: 10,
     height: 100,
-    moveUp: function () { this.y -= 25 },
+    moveUp: function () { 
+      this.y -= 25 
+
+      //$('body').css({"background-position-y":this.y+'px'}) 
+      //background - position - y: 400px;
+
+    },
     moveDown: function () { this.y += 25 },
   }
 
@@ -48,29 +57,32 @@
   }
 
   drawRightPaddle(rightPaddle);
-
-  // let roundOver = false; 
-  // let playerOneScore = 0;
-  // let playerTwoScore = 0;   
+ 
 
   document.getElementById("start-button").onclick = function () {
     startGame();
 
   }
     function startGame() {
-      animate();
-    }
+      cancelAnimationFrame(ANIME);
 
-      let ball = {
-        x: canvas.width/2,
-        y: canvas.height/2,
+       ball = {
+        x: canvas.width / 2,
+        y: canvas.height / 2,
         radius: 10,
         dx: 5 * (Math.random() > 0.5 ? 1 : -1),
         dy: 4 * (Math.random() * 2 - 1)
       };
+      animate();
       gameOn = true;
+      rallyCount = 0
+    }
 
+      //gameOn = true;
+      //console.log('hi')
 
+    let playerOneScore = 0
+    let playerTwoScore = 0
 
       function drawBall() {
 
@@ -81,8 +93,20 @@
         ctx.fill();
 
         // if (ball.x < 0 || ball.x > 700) ball.dx =- ball.dx;
-        if (ball.y < 0 || ball.y > canvas.height) ball.dy =- ball.dy;
+        if (ball.y - ball.radius < 0 || ball.y + ball.radius  > canvas.height){ //if it hit the top or bottom 
+           ball.dy =- ball.dy;
+        }
+        if (ball.x > canvas.width - 5 || ball.x < 0) {
+          if (gameOn === true){
+            rallyCount = 0;
+            gameOn = false;
+            setTimeout(function() {
+              startGame()
+          }, 500)
+        }
+      }
 
+      bounceBack(leftPaddle, rightPaddle)
         ball.x += ball.dx;
         ball.y += ball.dy;
         
@@ -92,13 +116,13 @@
         switch (e.keyCode) {
           case 38: 
             if(rightPaddle.y >= 0) {
-              rightPaddle.moveUp(); break;
+              rightPaddle.moveUp(); e.preventDefault(); break;
             } else {
               break;
             }
           case 40: 
             if(rightPaddle.y + rightPaddle.height <= canvas.height) {
-              rightPaddle.moveDown(); break;
+              rightPaddle.moveDown(); e.preventDefault(); break;
             } else {
               break;
             }
@@ -118,80 +142,42 @@
       }
 
 
-
-      let rallyCount = 0;
       function bounceBack(leftPaddle, rightPaddle) {
 
-        if ((ball.x - ball.radius/2 <= leftPaddle.x + leftPaddle.width)
-          && (ball.y < leftPaddle.y + leftPaddle.height && ball.y > leftPaddle.y)) {
-          ball.dx = - ball.dx;
-          ball.dy = (Math.random() * (5 - 0.75) + 2.75)
+        if ((ball.x - ball.radius <= leftPaddle.x + leftPaddle.width)
+          && (ball.y - ball.radius < leftPaddle.y + leftPaddle.height && ball.y > leftPaddle.y)) {
+          ball.dx = -ball.dx
+          ball.dy = 4 * (Math.random() * 2 - 1);
           rallyCount++
-          console.log(rallyCount);
+
 
 
         }
-        if (ball.x + ball.radius/2 >= canvas.width - rightPaddle.width 
-          && (ball.y > rightPaddle.y && ball.y < rightPaddle.y + rightPaddle.height)) {
-            ball.dx = - ball.dx;
-            ball.dy = (Math.random() * (5 - 2.75) + 2.75)
+        else if (ball.x + ball.radius >= canvas.width - rightPaddle.width 
+          && (ball.y + ball.radius > rightPaddle.y && ball.y - ball.radius < rightPaddle.y + rightPaddle.height)) {
+            ball.dx = -ball.dx;
+            ball.dy = 4 * (Math.random() * 2 - 1)
             rallyCount++
-            console.log(rallyCount);
         }
-
-        if (ball.x > canvas.width || ball.x < 0 && gameOn === true) {
-          rallyCount = 0;
-          ball.x = canvas.width/2 ;
-          ball.y = canvas.height/2;
-          console.log('restart')
-          //debugger;
-          gameOn = false; 
-          //startGame();
+        if (rallyCount >= 1) {
+          $(".rally-score").text("Rally!! " + rallyCount);
+        } else {
+          $(".rally-score").text('');
         }
-        $(".rally-score").text(rallyCount);
       }
+
       function animate() {
 
 
-        window.requestAnimationFrame(animate);
+        ANIME = window.requestAnimationFrame(animate);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawTable();
         drawBall();
+
         drawRightPaddle(rightPaddle);
         drawLeftPaddle(leftPaddle);
-        bounceBack(leftPaddle, rightPaddle);
+        //bounceBack(leftPaddle, rightPaddle);
 
       }
     
-  //}
-
-        // function startGame() {
-      //   if (roundOver === true) {
-      //     ball = {
-      //       x: canvas.width / 2,
-      //       y: canvas.height / 2,
-      //       dx: 5 * (Math.random() > 0.5 ? 1 : -1),
-      //       dy: 4 * (Math.random() * 2 - 1)
-      //   }; 
-      // }
-      //   document.getElementById("start-button").click();
-      //   let roundOver = false; 
-
-      // }
-
-      // function gameOver(ball) {    
-      //   if (ball.x > canvas.width) {
-      //     ball.dx = 0
-      //     ball.dy = 0
-
-      //     startGame()
-      //   }
-
-      //   if (ball.x < 0) {
-      //     ball.dx = 0
-      //     ball.dy = 0
-
-      //     startGame()
-      //   }
-
-      // }
+ 

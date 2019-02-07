@@ -1,6 +1,9 @@
 body {
   font-family: VT323, Arial, sans-serif;
-  background-image: url(img/ping-pong-championship.jpg);
+  background-image: url('img/ping-pong-championship.jpg');
+  /* overflow: hidden;  */
+  margin-bottom: 75px; */
+
 }
 
 .navbar {
@@ -37,5 +40,14 @@ body {
   border: 1px solid rgb(3, 3, 3);
 }
 
+.tall{
+  height: 100px;
+}
 
 
+.scores {
+  color: white;
+  font-size: 5px;
+  padding-top: 20px;
+  height: 50px;
+}

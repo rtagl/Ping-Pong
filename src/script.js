@@ -5,8 +5,8 @@ window.onload = function () {
 
   var canvas = document.getElementById('pong-table')
   var ctx = canvas.getContext('2d');
-  canvas.width = screen.width/2;
-  canvas.height = screen.height/2.5;
+  canvas.width = screen.width/1.5;
+  canvas.height = screen.height/2;
 
 
 
