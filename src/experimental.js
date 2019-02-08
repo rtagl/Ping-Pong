@@ -37,11 +37,11 @@ let leftPaddle = {
   width: 10,
   height: 100,
   moveUp: function () {
-    this.y -= 30
+    this.y -= 35
 
   },
   moveDown: function () {
-    this.y += 30 
+    this.y += 35 
   }
 }
 
@@ -59,10 +59,10 @@ let rightPaddle = {
   width: 10,
   height: 100,
   moveUp: function () {
-      this.y -= 30
+      this.y -= 35
   },
   moveDown: function () {
-      this.y += 30
+      this.y += 35
   }
 }
 
@@ -143,16 +143,20 @@ document.getElementById("start-button").onclick = function () {
 
   }
   
-  // function winner(playerOneScore, playerTwoScore) {
-  //   if(playerOneScore >= 3) {
-  //     alert('Player One Wins!!')
-  //     playerOneScore = 0;
-  //   }
-  //   if (playerTwoScore >= 3) {
-  //     alert('Player Two Wins!!')
-  //     playerTwoScore = 0;
-  //   }
-  // }
+  function winner() {
+    if(playerOneScore >= 3) {
+      alert('Player One Wins!!')
+      document.location.reload();
+      playerOneScore = 0;
+
+    }
+    if (playerTwoScore >= 3) {
+      alert('Player Two Wins!!')
+      document.location.reload();
+      playerOneScore = 0;
+    }
+  }
+
 
   document.onkeydown = function (e) {
     switch (e.keyCode) {
@@ -234,6 +238,5 @@ document.getElementById("start-button").onclick = function () {
 
     drawRightPaddle();
     drawLeftPaddle();
-    // winner(playerOneScore, playerTwoScore);
-
+    winner();
   }
