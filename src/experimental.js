@@ -12,8 +12,8 @@ let ball = {}
 let rallyCount = 0
 let playerOneScore = 0;
 let playerTwoScore = 0;
-$(".player-one-score").text("Player 1: " + playerOneScore);
-$(".player-two-score").text("Player 2: " + playerTwoScore);
+$(".player-one-score").text("Player One: " + playerOneScore);
+$(".player-two-score").text("Player Two: " + playerTwoScore);
 
 
 
@@ -77,8 +77,8 @@ drawRightPaddle();
 document.getElementById("start-button").onclick = function () {
   playerOneScore = 0;
   playerTwoScore = 0;
-  $(".player-one-score").text("Player 1: " + playerOneScore);
-  $(".player-two-score").text("Player 2: " + playerTwoScore);
+  $(".player-one-score").text("Player One: " + playerOneScore);
+  $(".player-two-score").text("Player Two: " + playerTwoScore);
   startGame();
 }
   function startGame() {
@@ -89,7 +89,7 @@ document.getElementById("start-button").onclick = function () {
       x: canvas.width / 2,
       y: canvas.height / 2,
       radius: 10,
-      color: "rgb(192, 247, 170)",
+      color: "rgb(147, 247, 107)",
       dx: 6 * (Math.random() > 0.5 ? 1 : -1),
       dy: 5 * (Math.random() * 2 - 1)
     };
@@ -116,7 +116,7 @@ document.getElementById("start-button").onclick = function () {
         rallyCount = 0;
         gameOn = false;
         playerOneScore++
-        $(".player-one-score").text("Player 1: " + playerOneScore);
+        $(".player-one-score").text("Player One: " + playerOneScore);
         pointSound.play();
         setTimeout(function () {
           startGame()
@@ -129,7 +129,7 @@ document.getElementById("start-button").onclick = function () {
         rallyCount = 0;
         gameOn = false;
         playerTwoScore++
-        $(".player-two-score").text("Player 2: " + playerTwoScore);
+        $(".player-two-score").text("Player Two: " + playerTwoScore);
         pointSound.play();
         setTimeout(function () {
           startGame()
@@ -142,6 +142,17 @@ document.getElementById("start-button").onclick = function () {
     ball.y += ball.dy;
 
   }
+  
+  // function winner(playerOneScore, playerTwoScore) {
+  //   if(playerOneScore >= 3) {
+  //     alert('Player One Wins!!')
+  //     playerOneScore = 0;
+  //   }
+  //   if (playerTwoScore >= 3) {
+  //     alert('Player Two Wins!!')
+  //     playerTwoScore = 0;
+  //   }
+  // }
 
   document.onkeydown = function (e) {
     switch (e.keyCode) {
@@ -177,23 +188,40 @@ document.getElementById("start-button").onclick = function () {
 
     if ((ball.x - ball.radius <= leftPaddle.x + leftPaddle.width)
       && (ball.y - ball.radius < leftPaddle.y + leftPaddle.height && ball.y > leftPaddle.y)) {
-      hitSound.play();
-      ball.dx = -ball.dx
-      ball.dy = 4 * (Math.random() * 2 - 1);
-      rallyCount++
+        if (rallyCount >= 10) {
+          hitSound.play();
+          ball.dx = -ball.dx*1.03
+          ball.dy = 5 * (Math.random() * 2 - 1);
+          rallyCount++
+        } else {
+          hitSound.play();
+          ball.dx = -ball.dx
+          ball.dy = 4 * (Math.random() * 2 - 1);
+          rallyCount++
+        }
 
     }
     else if (ball.x + ball.radius >= canvas.width - rightPaddle.width
       && (ball.y + ball.radius > rightPaddle.y && ball.y - ball.radius < rightPaddle.y + rightPaddle.height)) {
-      hitSound.play();
-      ball.dx = -ball.dx;
-      ball.dy = 4 * (Math.random() * 2 - 1)
-      rallyCount++
+        if (rallyCount >= 10) {
+          hitSound.play();
+          ball.dx = -ball.dx*1.03
+          console.log(ball.dx)
+          ball.dy = 5 * (Math.random() * 2 - 1);
+          rallyCount++
+        } else {
+          hitSound.play();
+          ball.dx = -ball.dx;
+          console.log(ball.dx)
+          ball.dy = 4 * (Math.random() * 2 - 1)
+          rallyCount++
+        }
     }
     if (rallyCount >= 10) {
       $(".rally-score").text("Rally!! " + rallyCount);
     } else {
       $(".rally-score").text('');
+    
     }
   }
 
@@ -206,27 +234,6 @@ document.getElementById("start-button").onclick = function () {
 
     drawRightPaddle();
     drawLeftPaddle();
+    // winner(playerOneScore, playerTwoScore);
 
   }
-
-
-// document.onkeydown = function (e) {
-//   if (e.keyCode == 38 && rightPaddle.y >= 0) {
-//     UP2 = true
-//     e.preventDefault();
-//     rightPaddle.moveUp();
-//   }
-//   if (e.keyCode == 40 && rightPaddle.y + rightPaddle.height <= canvas.height) {
-//     DOWN2 = true;
-//     e.preventDefault();
-//     rightPaddle.moveDown();
-//   }
-//   if (e.keyCode == 87 && leftPaddle.y >= 0) {
-//     UP1 = true;
-//     leftPaddle.moveUp();
-//   }
-//   if (e.keyCode == 83 && leftPaddle.y + leftPaddle.height <= canvas.height) {
-//     DOWN1 = true;
-//     leftPaddle.moveDown();
-//   }
-// }
