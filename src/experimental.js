@@ -120,7 +120,7 @@ document.getElementById("start-button").onclick = function () {
         pointSound.play();
         setTimeout(function () {
           startGame()
-        }, 500)
+        }, 1000)
       }
     }
 
@@ -133,7 +133,7 @@ document.getElementById("start-button").onclick = function () {
         pointSound.play();
         setTimeout(function () {
           startGame()
-        }, 500)
+        }, 1000)
       }
     }
 
@@ -153,7 +153,7 @@ document.getElementById("start-button").onclick = function () {
     if (playerTwoScore >= 3) {
       alert('Player Two Wins!!')
       document.location.reload();
-      playerOneScore = 0;
+      playerTwoScore = 0;
     }
   }
 
@@ -191,7 +191,7 @@ document.getElementById("start-button").onclick = function () {
   function bounceBack(leftPaddle, rightPaddle) {
 
     if ((ball.x - ball.radius <= leftPaddle.x + leftPaddle.width)
-      && (ball.y - ball.radius < leftPaddle.y + leftPaddle.height && ball.y > leftPaddle.y)) {
+      && (ball.y - ball.radius < leftPaddle.y + leftPaddle.height && ball.y + ball.radius > leftPaddle.y)) {
         if (rallyCount >= 10) {
           hitSound.play();
           ball.dx = -ball.dx*1.03
