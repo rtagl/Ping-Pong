@@ -1,184 +1,242 @@
-window.onload = function () {
-  document.getElementById("start-button").onclick = function () {
+//window.onload = function () {
+let canvas = document.getElementById('pong-table')
+let ctx = canvas.getContext('2d')
+let gameOn = false;
+let hitSound = new Audio('sounds/paddlehit.mp3');
+let pointSound = new Audio('sounds/point.mp3');
+
+canvas.width = screen.width / 2;
+canvas.height = screen.height / 2;
+let ANIME;
+let ball = {}
+let rallyCount = 0
+let playerOneScore = 0;
+let playerTwoScore = 0;
+$(".player-one-score").text("Player One: " + playerOneScore);
+$(".player-two-score").text("Player Two: " + playerTwoScore);
 
 
 
-  var canvas = document.getElementById('pong-table')
-  var ctx = canvas.getContext('2d');
-  canvas.width = screen.width/1.5;
-  canvas.height = screen.height/2;
+function drawTable() {
+  // ctx.fillStyle = "rgb(187, 135, 37)";
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+  ctx.beginPath();
+  ctx.moveTo(canvas.width / 2, 0);
+  ctx.lineTo(canvas.width / 2, canvas.height);
+  ctx.strokeStyle = 'white';
+  ctx.stroke();
 
+}
+drawTable();
 
-  class Paddle {
-    constructor(x, y, width, height) {
-      this.x = x;
-      this.y = y;
-      this.width = width;
-      this.height = height;
-    }
-    moveUp() {
-      this.y -= 25;
-    }
-    moveDown() {
-      this.y += 25;
-    }
-    draw() {
-      ctx.fillStyle = "red";
-      ctx.fillRect(this.x, this.y, this.width, this.height)
-    }
-  }
+let leftPaddle = {
+  x: 0,
+  y: canvas.height / 2.5,
+  width: 10,
+  height: 100,
+  moveUp: function () {
+    this.y -= 35
 
-  let rightPaddle = new Paddle(canvas.width - 20, 40, 20, 75)
-  let leftPaddle = new Paddle(0, canvas.height / 2.5, 20, 75)
-
-  let rallyScore = 0;
-
-  class Ball {
-    constructor(x, y, vx, vy, width, height, color) {
-      this.x = x;
-      this.y = y;
-      this.vx = vx * (Math.random() > .5 ? 1 : -1);
-      this.vy = vy * (Math.random() * 2 - 1);
-      this.width = width;
-      this.height = height;
-      this.color = color;
-    }
-    drawBall() {
-      ctx.fillStyle = this.color;
-      ctx.fillRect(this.x, this.y, this.width, this.height);
-    }
-    moveBall() {
-      let randomAngle = Math.random() * (1.5 - 0.5) + 0.5;
-      this.x += this.vx*randomAngle;
-      this.y += this.vy*randomAngle;
-      this.drawBall();
-
-      if (this.y + this.height > canvas.height || this.y < 0) {
-        this.vy = -this.vy
-      }
-      if (this.x + this.width > canvas.width || this.x < 0) {
-
-
-      }
-
-      if (
-        this.x + this.width >= rightPaddle.x &&
-        this.x <= rightPaddle.x + rightPaddle.width &&
-        (this.y < rightPaddle.y + rightPaddle.height &&
-          this.y + this.height > rightPaddle.y)
-      ) {
-        rallyScore += 1
-        this.vx = -this.vx 
-        if (rallyScore >= 10) {
-          console.log(rallyScore);
-        }
-      }
-
-      if (
-        this.y + this.height >= rightPaddle.y &&
-        this.y <= rightPaddle.y + rightPaddle.height &&
-        (this.x < rightPaddle.x + rightPaddle.width &&
-          this.x + this.width > rightPaddle.x)
-      ) {
-        this.vy = -this.vy;
-      }
-      if (
-        this.x + this.width >= leftPaddle.x &&
-        this.x <= leftPaddle.x + leftPaddle.width &&
-        (this.y < leftPaddle.y + leftPaddle.height &&
-          this.y + this.height > leftPaddle.y)
-      ) {
-        rallyScore += 1
-        this.vx = -this.vx;
-        if (rallyScore >= 10) {
-          console.log(rallyScore);
-        }
-      }
-
-      if (
-        this.y + this.height >= leftPaddle.y &&
-        this.y <= leftPaddle.y + leftPaddle.height &&
-        (this.x < leftPaddle.x + leftPaddle.width &&
-          this.x + this.width > leftPaddle.x)
-      ) {
-        this.vy = -this.vy;
-      }
-    }
-  }
-
-
-  let ball = new Ball(300, 30, 6, 4, 15, 15, 'black');
-
- 
-
-  document.onkeydown = function (e) {
-    switch (e.keyCode) {
-      case 38:
-        if (rightPaddle.y >= 0) {
-          rightPaddle.moveUp(); break;
-        } else {
-          break;
-        }
-      case 40:
-        if (rightPaddle.y + rightPaddle.height <= canvas.height) {
-          rightPaddle.moveDown(); break;
-        } else {
-          break;
-        }
-      case 87:
-        if (leftPaddle.y >= 0) {
-          leftPaddle.moveUp(); break;
-        } else {
-          break;
-        }
-      case 83:
-        if (leftPaddle.y + leftPaddle.height <= canvas.height) {
-          leftPaddle.moveDown(); break;
-        } else {
-          break;
-        }
-    }
-  }
-
-  function animate(){
-    window.requestAnimationFrame(animate);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    ball.moveBall()
-    rightPaddle.draw();
-    leftPaddle.draw();
-    rightPaddle.moveUp();
-    rightPaddle.moveDown();
-    leftPaddle.moveUp();
-    leftPaddle.moveDown();
-
-  }
-  animate()
+  },
+  moveDown: function () {
+    this.y += 35
   }
 }
 
 
-  // function moveBall() {
-  //   ball.x += ball.vx;
-  //   ball.y += ball.vy;
-  //   ball.drawBall();
+function drawLeftPaddle() {
+  ctx.fillStyle = "rgb(5, 235, 250)";
+  ctx.fillRect(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height);
+}
 
-  //   if (ball.y + ball.height > canvas.height || ball.y < 0) {
-  //     ball.vy = -ball.vy;
-  //   }
-  //   if (ball.x + ball.width > canvas.width || ball.x < 0) {
-  //     ball.vx = -ball.vx;
-  //   }
+drawLeftPaddle();
 
-  //   if ((ball.x + ball.width >= rightPaddle.x && ball.x <= rightPaddle.x + rightPaddle.width)
-  //     && (ball.y < rightPaddle.y + rightPaddle.height && ball.y + ball.height > rightPaddle.y)) {
-  //     ball.vy = -ball.vy 
-  //   }
+let rightPaddle = {
+  x: canvas.width - 10,
+  y: canvas.height / 2.5,
+  width: 10,
+  height: 100,
+  moveUp: function () {
+    this.y -= 35
+  },
+  moveDown: function () {
+    this.y += 35
+  }
+}
 
-  //   //right side
-  //   if ((ball.y + ball.height >= rightPaddle.y && ball.y <= rightPaddle.y + rightPaddle.height)
-  //     && (ball.x < rightPaddle.x + rightPaddle.width && ball.x + ball.width > rightPaddle.x)) {
-  //     ball.vx = -ball.vx 
-  //   }
-  // }
+function drawRightPaddle() {
+  ctx.fillStyle = "rgb(250, 5, 111)";
+  ctx.fillRect(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height);
+}
+
+drawRightPaddle();
+
+
+document.getElementById("start-button").onclick = function () {
+  playerOneScore = 0;
+  playerTwoScore = 0;
+  $(".player-one-score").text("Player One: " + playerOneScore);
+  $(".player-two-score").text("Player Two: " + playerTwoScore);
+  startGame();
+}
+function startGame() {
+  cancelAnimationFrame(ANIME);
+
+
+  ball = {
+    x: canvas.width / 2,
+    y: canvas.height / 2,
+    radius: 10,
+    color: "rgb(147, 247, 107)",
+    dx: 6 * (Math.random() > 0.5 ? 1 : -1),
+    dy: 5 * (Math.random() * 2 - 1)
+  };
+  animate();
+  gameOn = true;
+  rallyCount = 0;
+}
+
+
+function drawBall() {
+
+  ctx.beginPath();
+  ctx.fillStyle = ball.color;
+  ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2, true);
+  ctx.closePath();
+  ctx.fill();
+
+  if (ball.y - ball.radius < 0 || ball.y + ball.radius > canvas.height) { //if it hit the top or bottom 
+    ball.dy = - ball.dy;
+  }
+
+  if (ball.x > canvas.width - 5) {
+    if (gameOn === true) {
+      rallyCount = 0;
+      gameOn = false;
+      playerOneScore++
+      $(".player-one-score").text("Player One: " + playerOneScore);
+      pointSound.play();
+      setTimeout(function () {
+        startGame()
+      }, 1000)
+    }
+  }
+
+  if (ball.x < 0) {
+    if (gameOn === true) {
+      rallyCount = 0;
+      gameOn = false;
+      playerTwoScore++
+      $(".player-two-score").text("Player Two: " + playerTwoScore);
+      pointSound.play();
+      setTimeout(function () {
+        startGame()
+      }, 1000)
+    }
+  }
+
+  bounceBack(leftPaddle, rightPaddle)
+  ball.x += ball.dx;
+  ball.y += ball.dy;
+
+}
+
+function winner() {
+  if (playerOneScore >= 3) {
+    alert('Player One Wins!!')
+    document.location.reload();
+    playerOneScore = 0;
+
+  }
+  if (playerTwoScore >= 3) {
+    alert('Player Two Wins!!')
+    document.location.reload();
+    playerTwoScore = 0;
+  }
+}
+
+
+document.onkeydown = function (e) {
+  switch (e.keyCode) {
+    case 38:
+      if (rightPaddle.y >= 0) {
+        rightPaddle.moveUp(); e.preventDefault(); break;
+      } else {
+        break;
+      }
+    case 40:
+      if (rightPaddle.y + rightPaddle.height <= canvas.height) {
+        rightPaddle.moveDown(); e.preventDefault(); break;
+      } else {
+        break;
+      }
+    case 87:
+      if (leftPaddle.y >= 0) {
+        leftPaddle.moveUp(); break;
+      } else {
+        break;
+      }
+    case 83:
+      if (leftPaddle.y + leftPaddle.height <= canvas.height) {
+        leftPaddle.moveDown(); break;
+      } else {
+        break;
+      }
+  }
+}
+
+
+function bounceBack(leftPaddle, rightPaddle) {
+
+  if ((ball.x - ball.radius <= leftPaddle.x + leftPaddle.width)
+    && (ball.y - ball.radius < leftPaddle.y + leftPaddle.height && ball.y + ball.radius > leftPaddle.y)) {
+    if (rallyCount >= 10) {
+      hitSound.play();
+      ball.dx = -ball.dx * 1.03
+      ball.dy = 5 * (Math.random() * 2 - 1);
+      rallyCount++
+    } else {
+      hitSound.play();
+      ball.dx = -ball.dx
+      ball.dy = 4 * (Math.random() * 2 - 1);
+      rallyCount++
+    }
+
+  }
+  else if (ball.x + ball.radius >= canvas.width - rightPaddle.width
+    && (ball.y + ball.radius > rightPaddle.y && ball.y - ball.radius < rightPaddle.y + rightPaddle.height)) {
+    if (rallyCount >= 10) {
+      hitSound.play();
+      ball.dx = -ball.dx * 1.03
+      console.log(ball.dx)
+      ball.dy = 5 * (Math.random() * 2 - 1);
+      rallyCount++
+    } else {
+      hitSound.play();
+      ball.dx = -ball.dx;
+      console.log(ball.dx)
+      ball.dy = 4 * (Math.random() * 2 - 1)
+      rallyCount++
+    }
+  }
+  if (rallyCount >= 10) {
+    $(".rally-score").text("Rally!! " + rallyCount);
+  } else {
+    $(".rally-score").text('');
+
+  }
+}
+
+function animate() {
+
+  ANIME = window.requestAnimationFrame(animate);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawTable();
+  drawBall();
+
+  drawRightPaddle();
+  drawLeftPaddle();
+  winner();
+}
