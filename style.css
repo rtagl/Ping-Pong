@@ -72,3 +72,8 @@ body {
   color: rgb(250, 5, 111);
   padding-left: 80px;
 }
+
+.controls {
+  padding-top: 40px;
+  color: rgb(227, 221, 221);
+}

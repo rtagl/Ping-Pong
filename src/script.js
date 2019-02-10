@@ -1,4 +1,5 @@
-//window.onload = function () {
+// drawing the game board upon page load and initializing global vars
+
 let canvas = document.getElementById('pong-table')
 let ctx = canvas.getContext('2d')
 let gameOn = false;
@@ -73,7 +74,7 @@ function drawRightPaddle() {
 
 drawRightPaddle();
 
-
+// restart the game by pressing restart
 document.getElementById("start-button").onclick = function () {
   playerOneScore = 0;
   playerTwoScore = 0;
@@ -98,7 +99,7 @@ function startGame() {
   rallyCount = 0;
 }
 
-
+// ball properties
 function drawBall() {
 
   ctx.beginPath();
@@ -143,6 +144,8 @@ function drawBall() {
 
 }
 
+
+// game reloads if a player scores 3 points
 function winner() {
   if (playerOneScore >= 3) {
     alert('Player One Wins!!')
@@ -157,7 +160,7 @@ function winner() {
   }
 }
 
-
+// paddle controls
 document.onkeydown = function (e) {
   switch (e.keyCode) {
     case 38:
@@ -187,7 +190,7 @@ document.onkeydown = function (e) {
   }
 }
 
-
+// ball logic when hitting the coordinates of left/right paddle
 function bounceBack(leftPaddle, rightPaddle) {
 
   if ((ball.x - ball.radius <= leftPaddle.x + leftPaddle.width)
@@ -210,17 +213,16 @@ function bounceBack(leftPaddle, rightPaddle) {
     if (rallyCount >= 10) {
       hitSound.play();
       ball.dx = -ball.dx * 1.03
-      console.log(ball.dx)
       ball.dy = 5 * (Math.random() * 2 - 1);
       rallyCount++
     } else {
       hitSound.play();
       ball.dx = -ball.dx;
-      console.log(ball.dx)
       ball.dy = 4 * (Math.random() * 2 - 1)
       rallyCount++
     }
   }
+  // updating rally count after each consecutive hit above 10
   if (rallyCount >= 10) {
     $(".rally-score").text("Rally!! " + rallyCount);
   } else {
@@ -229,6 +231,7 @@ function bounceBack(leftPaddle, rightPaddle) {
   }
 }
 
+// animates the moving parts of the game by continuously redrawing the canvas
 function animate() {
 
   ANIME = window.requestAnimationFrame(animate);
